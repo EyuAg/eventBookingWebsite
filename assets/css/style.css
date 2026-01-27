@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Kaushan+Script&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  height: fit-content;
+  overflow-x: hidden;
+}
+
+body {
+  text-rendering: optimizeSpeed;
+  background-color: #EAEAEA;
+  font-family: "Albert Sans", sans-serif;
+  font-size: 16px;
+  line-height: 28px;
+  color: #121212;
+}
+
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+img,
+picture {
+  max-width: 100%;
+  display: block;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+}
+
+/* common styles and utility */
+.font-header-1 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: clamp(2.4375rem, 1.768835616438356rem + 3.013698630136986vw, 4.5rem);
+  color: #fff;
+  font-weight: 500;
+  line-height: clamp(2.6875rem, 2.079623287671233rem + 2.73972602739726vw, 4.8625rem);
+  letter-spacing: -1.44px;
+}
+
+.font-header-2 {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 38px;
+  color: #22271C;
+  font-weight: 500;
+  letter-spacing: -0.76px;
+}
+
+.font-header-3 {
+  font-family: "Albert Sans", sans-serif;
+  font-size: 22px;
+  color: #22271C;
+  line-height: normal;
+  font-weight: 600;
+}
+
+.font-accent {
+  font-family: "Kaushan Script", cursive;
+  line-height: 73px;
+  letter-spacing: -1.44px;
+}
+
+.container {
+  max-width: 1450px;
+  padding-inline: 2rem;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 700px) {
+  .container {
+    padding-inline: 0.625rem;
+  }
+}
+
+.fw-regular {
+  font-weight: 400;
+}
+
+.fw-semi-bold {
+  font-weight: 600;
+}
+
+.fw-bold {
+  font-weight: 700;
+}
+
+.fw-bold-2 {
+  font-weight: 800;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.section-label {
+  margin-bottom: 3.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-label .label {
+  margin-top: 3px;
+  display: flex;
+  gap: 4px;
+  padding: 2px 10px;
+  align-items: center;
+  border-radius: 5px;
+  border: 1px solid #819A61;
+  background: rgba(211, 255, 155, 0.19);
+}
+
+.section-label .label p {
+  color: #545454;
+}
+
+.sub-headline {
+  color: #22271C;
+  font-size: 26px;
+  line-height: 35px;
+}
+
+.accent-text-1 {
+  background: linear-gradient(90deg, #D1FF9A 0.17%, #e4fac9 40.42%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-right: 5px;
+  position: relative;
+}
+
+.accent-text-1::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 3px;
+  width: 100%;
+  height: 0.25em;
+  background-image: url('/event-booking/assets/images/underline.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.accent-text-2 {
+  font-weight: 400;
+  padding-right: 10px;
+  color: #a7e457;
+}
+
+/* button styles */
+.btn-link {
+  width: fit-content;
+  display: inline-block;
+}
+
+.btn-link .btn {
+  cursor: pointer;
+  display: flex;
+  padding: 12px 12px;
+  gap: 8px;
+  align-items: center;
+  border-radius: 6px;
+  outline: none;
+  border: none;
+  font-weight: 500;
+}
+
+.btn.btn-primary {
+  background: #c3fa7b;
+}
+
+.btn.btn-primary-2 {
+  background: #bfe68d;
+}
+
+.btn.btn-secondary {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.btn.btn-tertiary {
+  background: #111916;
+  color: white;
+}
