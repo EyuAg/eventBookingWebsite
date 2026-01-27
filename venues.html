@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VenueLink - Browse Venues</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-wrapper container">
+            <a href="index.html" aria-label="Home" class="logo-link">
+                <img src="assets/images/logo.svg" alt="VenueLink Logo">
+            </a>
+
+            <div class="nav-items">
+                <nav class="nav-menu">
+                    <ul role="list" class="nav-links">
+                        <li class="nav-link">
+                            <a href="index.html" aria-label="Home" data-page="home">Home</a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="dashboard.html" aria-label="Dashboard" data-page="dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="venues.html" aria-label="Venues" data-page="venues">Venues</a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="index.html#featured-venues" aria-label="Featured" data-page="featured">Featured</a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="nav-btns">
+                    <a href="login.html" class="btn-link">
+                        <button class="btn btn-primary-2">Login</button>
+                    </a>
+                    <a href="register.html" class="btn-link">
+                        <button class="btn btn-secondary-2">Register</button>
+                    </a>
+                    <button class="nav-toggler" aria-label="Hamburger menu">
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="list-hero-section">
+        <div class="container wrapper">
+            <div class="list-hero-text">
+                <h1 class="font-header-1">Find Venues That Fit All Your Needs!</h1>
+                <p>We bring together a wide variety of venues to help you find the perfect space for your event,
+                    meeting, or celebration.</p>
+            </div>
+            <form method="get" class="filter-form">
+                <label>
+                    Search Venue
+                    <input type="text" name="search" placeholder="Search by tag, name, or city" size="35" value="">
+                </label>
+
+                <label>
+                    Capacity
+                    <input type="number" name="capacity" min="1" size="5" value="" placeholder="Min capacity">
+                </label>
+
+                <label>
+                    Start Date
+                    <input type="date" name="start_date" value="">
+                </label>
+
+                <label>
+                    End Date
+                    <input type="date" name="end_date" value="">
+                </label>
+
+                <label>
+                    Sort Price
+                    <select name="sort">
+                        <option value="desc">High to Low</option>
+                        <option value="asc">Low to High</option>
+                    </select>
+                </label>
+
+                <label>
+                    Sort Rating
+                    <select name="rating_sort">
+                        <option value="desc">High to Low</option>
+                        <option value="asc">Low to High</option>
+                    </select>
+                </label>
+
+                <button type="submit">Apply Filter</button>
+            </form>
+        </div>
+    </section>
