@@ -132,3 +132,211 @@
             </table>
         </div>
     </section>
+
+   <!-- Customer Dashboard Section -->
+    <section class="dashboard-data" id="customer-dashboard" style="background: #f9f9f9; padding-top: 4rem;">
+        <div class="container wrapper">
+            <h2 class="font-header-2">Customer's Dashboard</h2>
+            <p style="margin-bottom: 2rem;">View and manage your bookings. (Demo View)</p>
+            
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <a href="#book-venue-form" class="btn-link"><button class="btn btn-primary">Book a New Venue</button></a>
+            </div>
+            
+            <form method="get" class="filter-form">
+                <div class="filter-header">
+                    <h2 class="font-header-3">My Bookings</h2>
+                    <p>Filter by Status</p>
+                </div>
+                <select name="status">
+                    <option value="all">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button type="submit">Filter</button>
+            </form>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Venue Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Request Date</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Skylight International Hotel</td>
+                        <td>2024-03-15</td>
+                        <td>2024-03-16</td>
+                        <td>2024-02-01</td>
+                        <td>ETB 720,000.00</td>
+                        <td>pending</td>
+                    </tr>
+                    <tr>
+                        <td>Kuriftu Resort & Spa</td>
+                        <td>2024-05-10</td>
+                        <td>2024-05-12</td>
+                        <td>2024-01-20</td>
+                        <td>ETB 612,000.00</td>
+                        <td>confirmed</td>
+                    </tr>
+                    <tr>
+                        <td>Ghion Hotel</td>
+                        <td>2024-02-28</td>
+                        <td>2024-02-28</td>
+                        <td>2024-01-15</td>
+                        <td>ETB 187,200.00</td>
+                        <td>confirmed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Add Venue Form Section -->
+    <section class="add-venue-section" id="add-venue" style="background: linear-gradient(180deg, #D5FFBE 0%, rgba(213, 255, 190, 0.54) 38.48%, rgba(213, 255, 190, 0.00) 94.17%);">
+        <div class="wrapper container">
+            <h2 class="font-header-2">Add New Venue</h2>
+            <p>List your venue to start receiving booking requests from customers.</p>
+            <form class="add-form">
+                <input type="text" name="name" placeholder="Venue Name" required>
+                <textarea name="description" placeholder="Description" required></textarea>
+                <input type="text" name="address" placeholder="Address" required>
+                <input type="text" name="city" placeholder="City" required>
+                <input type="number" name="capacity" placeholder="Capacity" required>
+                <input type="number" step="0.01" name="price_per_hour" placeholder="Price per hour" required>
+                <input type="file" name="image" accept="image/*">
+
+                <h3>Amenities</h3>
+                <div class="checkboxes">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="amenities[]" value="Air Conditioning" />
+                        <span>Air Conditioning</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="amenities[]" value="WiFi" />
+                        <span>WiFi</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="amenities[]" value="Parking" />
+                        <span>Parking</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="amenities[]" value="Projector" />
+                        <span>Projector</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="amenities[]" value="Catering Kitchen" />
+                        <span>Catering Kitchen</span>
+                    </label>
+                </div>
+
+                <h3>Tags</h3>
+                <div class="checkboxes">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="tags[]" value="1" />
+                        <span>Weddings</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="tags[]" value="2" />
+                        <span>Corporate</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="tags[]" value="3" />
+                        <span>Outdoor</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="tags[]" value="4" />
+                        <span>Luxury</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="tags[]" value="5" />
+                        <span>Tech</span>
+                    </label>
+                </div>
+
+                <button type="submit">Add Venue</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Book Venue Form -->
+    <section class="add-venue-section" id="book-venue-form" style="background: linear-gradient(180deg, #BBABFF 0%, rgba(187, 171, 255, 0.54) 38.48%, rgba(187, 171, 255, 0.00) 94.17%); margin-top: 4rem;">
+        <div class="wrapper container">
+            <h2 class="font-header-2">Book a Venue</h2>
+            <p>Fill out the form below to request a booking for your event.</p>
+            <form class="add-form" style="max-width: 800px;">
+                <label style="width: 100%;">
+                    Select Venue
+                    <select name="venue_id" required>
+                        <option value="">Choose a venue...</option>
+                        <option value="1">Radisson Blu Hotel</option>
+                        <option value="2">Skylight International Hotel</option>
+                        <option value="3">Sheraton Addis</option>
+                        <option value="4">Kuriftu Resort & Spa</option>
+                        <option value="5">Ghion Hotel</option>
+                    </select>
+                </label>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%;">
+                    <label>
+                        Event Start Date
+                        <input type="date" name="start_date" required>
+                    </label>
+                    <label>
+                        Event End Date
+                        <input type="date" name="end_date" required>
+                    </label>
+                </div>
+                
+                <label style="width: 100%;">
+                    Event Type
+                    <select name="event_type" required>
+                        <option value="">Select event type...</option>
+                        <option value="wedding">Wedding</option>
+                        <option value="corporate">Corporate Event</option>
+                        <option value="conference">Conference</option>
+                        <option value="party">Party/Celebration</option>
+                        <option value="other">Other</option>
+                    </select>
+                </label>
+                
+                <label style="width: 100%;">
+                    Number of Guests
+                    <input type="number" name="guest_count" min="1" required>
+                </label>
+                
+                <label style="width: 100%;">
+                    Special Requests or Notes
+                    <textarea name="special_requests" placeholder="Any special requirements or notes for the venue owner..." rows="4"></textarea>
+                </label>
+                
+                <label style="width: 100%;">
+                    Contact Email
+                    <input type="email" name="contact_email" required>
+                </label>
+                
+                <label style="width: 100%;">
+                    Contact Phone
+                    <input type="tel" name="contact_phone" required>
+                </label>
+
+                <button type="submit" style="width: 100%;">Submit Booking Request</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="current-year">2026</span> VenueLink. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
