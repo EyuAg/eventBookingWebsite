@@ -360,3 +360,242 @@ async function loadVenueReviews(venueId) {
         reviewForm.insertAdjacentHTML('beforebegin', reviewsHTML);
     }
 }
+
+// ==================== FORM HANDLING ====================
+
+function setupVenueFilters() {
+    const filterForm = document.querySelector('.filter-form');
+    if (!filterForm) return;
+
+    filterForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const params = new URLSearchParams();
+        
+        for (let [key, value] of formData.entries()) {
+            if (value) params.append(key, value);
+        }
+        
+        // Update URL without reloading the page
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        window.history.pushState({}, '', newUrl);
+        
+        // Reload venues with new filters
+        await loadAllVenues();
+        
+        // Show success message
+        showToast('Filters applied successfully!');
+    });
+}
+
+function setupSearch() {
+    const searchInput = document.querySelector('input[name="search"]');
+    const searchButton = document.querySelector('.filter-form button[type="submit"]');
+    
+    if (searchInput && searchButton) {
+        // Real-time search on typing (with debounce)
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                if (this.value.length >= 2) {
+                    await performSearch(this.value);
+                } else if (this.value.length === 0) {
+                    await loadAllVenues();
+                }
+            }, 500);
+        });
+        
+        // Search on button click
+        searchButton.addEventListener('click', async function(e) {
+            e.preventDefault();
+            await performSearch(searchInput.value);
+        });
+    }
+}
+
+async function performSearch(query) {
+    try {
+        const venuesContainer = document.querySelector('.venues-list');
+        venuesContainer.innerHTML = '<div class="loading">Searching venues...</div>';
+        
+        const venues = await VenueAPI.searchVenues(query);
+        
+        if (venues.length === 0) {
+            venuesContainer.innerHTML = `<p class="no-venues">No venues found for "${query}". Try different keywords.</p>`;
+            return;
+        }
+        
+        venuesContainer.innerHTML = venues.map(venue => createVenueCardHTML(venue)).join('');
+        initStarRatings();
+        
+    } catch (error) {
+        console.error('Search error:', error);
+        showError(document.querySelector('.venues-list'), 'Search failed. Please try again.');
+    }
+}
+
+function setupReviewForm() {
+    const reviewForm = document.querySelector('.review-form');
+    if (!reviewForm) return;
+
+    reviewForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const rating = this.querySelector('select[name="rating"]').value;
+        const comment = this.querySelector('textarea[name="comment"]').value;
+        const venueId = this.querySelector('input[name="venue_id"]')?.value || 1;
+        
+        if (!comment.trim()) {
+            alert('Please enter a review comment');
+            return;
+        }
+        
+        try {
+            const result = await VenueAPI.submitReview({
+                venueId: venueId,
+                rating: parseInt(rating),
+                comment: comment.trim()
+            });
+            
+            if (result.success) {
+                showToast('Review submitted successfully!');
+                this.reset();
+                // Reload reviews
+                await loadVenueReviews(venueId);
+            }
+        } catch (error) {
+            console.error('Review submission error:', error);
+            showToast('Failed to submit review. Please try again.', 'error');
+        }
+    });
+}
+
+function setupBookingForm() {
+    const bookingForm = document.querySelector('.book-form');
+    if (!bookingForm) return;
+
+    bookingForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const startDate = this.querySelector('input[name="start_date"]').value;
+        const endDate = this.querySelector('input[name="end_date"]').value;
+        const venueId = this.querySelector('input[name="venue_id"]')?.value || 1;
+        
+        if (!startDate || !endDate) {
+            alert('Please select both start and end dates');
+            return;
+        }
+        
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        if (start < today) {
+            alert('Start date cannot be in the past');
+            return;
+        }
+        
+        if (end < start) {
+            alert('End date must be after start date');
+            return;
+        }
+        
+        // Calculate days and price
+        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+        const pricePerDay = 24 * 15000; // Example: 24 hours * ETB 15,000/hour
+        const totalPrice = days * pricePerDay;
+        
+        try {
+            const result = await VenueAPI.bookVenue({
+                venueId: venueId,
+                startDate: startDate,
+                endDate: endDate,
+                totalPrice: totalPrice,
+                venueName: document.querySelector('.venue-card-lg h3')?.textContent || 'Selected Venue'
+            });
+            
+            if (result.success) {
+                showToast(`Booking confirmed! Booking ID: ${result.bookingId}`);
+                // In a real app, redirect to confirmation page
+                setTimeout(() => {
+                    window.location.href = `dashboard.html?booking=${result.bookingId}`;
+                }, 1500);
+            }
+        } catch (error) {
+            console.error('Booking error:', error);
+            showToast('Booking failed. Please try again.', 'error');
+        }
+    });
+}
+
+// ==================== DASHBOARD FUNCTIONS ====================
+
+async function loadDashboardData() {
+    // Determine user type from URL or default to customer
+    const urlParams = new URLSearchParams(window.location.search);
+    const userType = urlParams.get('user') || 'customer';
+    
+    try {
+        const venues = await VenueAPI.getDashboardVenues(userType);
+        
+        // Update dashboard sections based on user type
+        if (userType === 'owner') {
+            updateOwnerDashboard(venues);
+        } else {
+            updateCustomerDashboard(venues);
+        }
+        
+    } catch (error) {
+        console.error('Dashboard data error:', error);
+        showToast('Failed to load dashboard data', 'error');
+    }
+}
+
+function updateOwnerDashboard(venues) {
+    // Update venues list
+    const venuesList = document.querySelector('#owner-dashboard table tbody');
+    if (venuesList) {
+        venuesList.innerHTML = venues.map(venue => `
+            <tr>
+                <td>${venue.name}</td>
+                <td>${venue.bookings?.[0]?.customer || 'No bookings'}</td>
+                <td>${venue.bookings?.[0]?.date || 'N/A'}</td>
+                <td>${venue.bookings?.[1]?.date || 'N/A'}</td>
+                <td>${new Date().toISOString().split('T')[0]}</td>
+                <td>ETB ${parseFloat(venue.price).toLocaleString()}</td>
+                <td><span class="status-${venue.bookings?.[0]?.status || 'pending'}">${venue.bookings?.[0]?.status || 'pending'}</span></td>
+                <td>
+                    <a href="#" class="btn-link accept-booking" data-booking="1"><button class="btn btn-primary-2">Accept</button></a>
+                    <a href="#" class="btn-link reject-booking" data-booking="1"><button class="btn btn-tertiary">Reject</button></a>
+                </td>
+            </tr>
+        `).join('');
+    }
+}
+
+function updateCustomerDashboard(venues) {
+    // Update customer bookings
+    const bookingsList = document.querySelector('#customer-dashboard table tbody');
+    if (bookingsList) {
+        bookingsList.innerHTML = venues.map((venue, index) => {
+            const statuses = ['pending', 'confirmed', 'cancelled'];
+            const status = statuses[index % statuses.length];
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() + (index + 1) * 7);
+            
+            return `
+                <tr>
+                    <td>${venue.name}</td>
+                    <td>${startDate.toISOString().split('T')[0]}</td>
+                    <td>${new Date(startDate.getTime() + 86400000).toISOString().split('T')[0]}</td>
+                    <td>${new Date().toISOString().split('T')[0]}</td>
+                    <td>ETB ${parseFloat(venue.price).toLocaleString()}</td>
+                    <td><span class="status-${status}">${status}</span></td>
+                </tr>
+            `;
+        }).join('');
+    }
+}
