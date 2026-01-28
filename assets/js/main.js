@@ -599,3 +599,339 @@ function updateCustomerDashboard(venues) {
         }).join('');
     }
 }
+
+// ==================== UTILITY FUNCTIONS ====================
+
+function showError(container, message) {
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="error-message">
+            <p>${message}</p>
+            <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 1rem;">Retry</button>
+        </div>
+    `;
+}
+
+function showToast(message, type = 'success') {
+    // Remove existing toast
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) existingToast.remove();
+    
+    // Create new toast
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function initStarRatings() {
+    const starContainers = document.querySelectorAll('.stars');
+    
+    starContainers.forEach(container => {
+        const stars = container.querySelectorAll('.star:not(.filled)');
+        
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const allStars = container.querySelectorAll('.star');
+                const clickedIndex = Array.from(allStars).indexOf(this);
+                
+                // Update UI
+                allStars.forEach((s, index) => {
+                    if (index <= clickedIndex) {
+                        s.classList.add('filled');
+                    } else {
+                        s.classList.remove('filled');
+                    }
+                });
+                
+                // In a real app, submit rating to API
+                const rating = clickedIndex + 1;
+                showToast(`You rated ${rating} stars!`);
+            });
+        });
+    });
+}
+
+function initCustomCheckboxes() {
+    const customCheckboxes = document.querySelectorAll('.custom-checkbox');
+    
+    customCheckboxes.forEach(checkbox => {
+        const input = checkbox.querySelector('input[type="checkbox"]');
+        const span = checkbox.querySelector('span');
+        
+        if (input && span) {
+            // Initial state
+            if (input.checked) {
+                span.style.background = '#333';
+                span.style.color = '#FFF';
+            }
+            
+            // Update on change
+            input.addEventListener('change', function() {
+                if (this.checked) {
+                    span.style.background = '#333';
+                    span.style.color = '#FFF';
+                } else {
+                    span.style.background = '#FFF';
+                    span.style.color = '#333';
+                }
+            });
+            
+            // Make span clickable
+            span.addEventListener('click', function(e) {
+                e.preventDefault();
+                input.checked = !input.checked;
+                input.dispatchEvent(new Event('change'));
+            });
+        }
+    });
+}
+
+function initBookingActions() {
+    // Accept booking buttons
+    document.querySelectorAll('.accept-booking').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const bookingId = this.getAttribute('data-booking');
+            
+            if (confirm('Are you sure you want to accept this booking?')) {
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    const row = this.closest('tr');
+                    const statusCell = row.querySelector('td:nth-child(7)');
+                    statusCell.innerHTML = '<span class="status-confirmed">confirmed</span>';
+                    
+                    // Remove action buttons
+                    row.querySelectorAll('.btn-link').forEach(link => link.remove());
+                    
+                    showToast('Booking accepted successfully!');
+                } catch (error) {
+                    showToast('Failed to accept booking', 'error');
+                }
+            }
+        });
+    });
+    
+    // Reject booking buttons
+    document.querySelectorAll('.reject-booking').forEach(btn => {
+        btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const bookingId = this.getAttribute('data-booking');
+            
+            if (confirm('Are you sure you want to reject this booking?')) {
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    const row = this.closest('tr');
+                    const statusCell = row.querySelector('td:nth-child(7)');
+                    statusCell.innerHTML = '<span class="status-cancelled">cancelled</span>';
+                    
+                    // Remove action buttons
+                    row.querySelectorAll('.btn-link').forEach(link => link.remove());
+                    
+                    showToast('Booking rejected successfully!');
+                } catch (error) {
+                    showToast('Failed to reject booking', 'error');
+                }
+            }
+        });
+    });
+}
+
+function initForms() {
+    // Login form validation
+    const loginForm = document.querySelector('.auth-form');
+    if (loginForm && window.location.pathname.includes('login.html')) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = this.querySelector('input[type="email"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            
+            // Simple validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            // Simulate login
+            showToast('Login successful! Redirecting...');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        });
+    }
+    
+    // Register form validation
+    const registerForm = document.querySelector('.auth-form');
+    if (registerForm && window.location.pathname.includes('register.html')) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = this.querySelector('input[type="text"]').value;
+            const email = this.querySelector('input[type="email"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+            const confirmPassword = this.querySelector('input[name="password_confirmation"]').value;
+            const accountType = this.querySelector('select[name="type"]').value;
+            
+            // Validation
+            if (!name.trim()) {
+                showToast('Full name is required', 'error');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showToast('Password must be at least 8 characters', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (!accountType) {
+                showToast('Please select an account type', 'error');
+                return;
+            }
+            
+            // Simulate registration
+            showToast('Registration successful! Redirecting to login...');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+    }
+    
+    // Add venue form
+    const addVenueForm = document.querySelector('.add-form');
+    if (addVenueForm && !addVenueForm.querySelector('button[type="submit"]')) {
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.textContent = 'Add Venue';
+        addVenueForm.appendChild(submitBtn);
+        
+        addVenueForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const venueName = this.querySelector('input[type="text"]').value;
+            const description = this.querySelector('textarea').value;
+            const capacity = this.querySelector('input[type="number"]').value;
+            
+            if (!venueName || !description || !capacity) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            showToast('Venue added successfully!');
+            this.reset();
+        });
+    }
+}
+
+function initEventListeners() {
+    // Initialize FullCalendar if present
+    if (typeof FullCalendar !== 'undefined' && document.getElementById('calendar')) {
+        initCalendar();
+    }
+    
+    // Handle URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('booking') === 'success') {
+        showToast('Booking confirmed successfully!');
+    }
+}
+
+function initCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    
+    // Generate demo availability data
+    const events = [];
+    const today = new Date();
+    
+    for (let i = 0; i < 30; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        // Random availability for demo
+        const isAvailable = Math.random() > 0.3;
+        
+        events.push({
+            start: dateStr,
+            end: dateStr,
+            display: 'background',
+            backgroundColor: isAvailable ? '#96fc71' : '#ff795e',
+            title: isAvailable ? 'Available' : 'Booked'
+        });
+    }
+    
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: ''
+        },
+        validRange: {
+            start: today,
+            end: new Date(today.setDate(today.getDate() + 30))
+        },
+        events: events,
+    });
+    
+    calendar.render();
+}
+
+// Add CSS animations for toast
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    .status-pending { color: #ff9800; font-weight: 600; }
+    .status-confirmed { color: #4CAF50; font-weight: 600; }
+    .status-cancelled { color: #f44336; font-weight: 600; }
+`;
+document.head.appendChild(style);
