@@ -3,7 +3,7 @@
 A modern, fully responsive event venue booking platform built with vanilla HTML, CSS, and JavaScript. Features dynamic API integration, interactive UI components, and a complete booking workflow.
 
 🚀 Live Demo
-https://github.com/EyuAg/eyuCoffeeWebsite.git
+https://eyuag.github.io/eyuCoffeeWebsite/
 
 ✨ Features
 
